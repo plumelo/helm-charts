@@ -1,5 +1,12 @@
 replicaCount: 1
 
+mail:
+  domain: example.com
+
+fallbackAdmin:
+  user: "admin"
+  hash: ""
+
 image:
   repository: stalwartlabs/mail-server
   pullPolicy: IfNotPresent
