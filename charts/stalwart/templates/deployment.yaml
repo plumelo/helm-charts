@@ -59,10 +59,20 @@ spec:
           {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
+            - name: stalwart-config
+              mountPath: /opt/stalwart-mail/etc
+            - name: stalwart-volume
+              mountPath: /opt/stalwart-mail/data
             {{- toYaml . | nindent 12 }}
           {{- end }}
       {{- with .Values.volumes }}
       volumes:
+        - name: stalwart-volume
+          persistentVolumeClaim:
+            claimName: {{ include "stalwart.fullname" . }}
+        - name: stalwart-config
+          configMap:
+            name: {{ include "stalwart.fullname" . }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}
