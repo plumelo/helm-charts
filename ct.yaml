@@ -1,3 +1,6 @@
-helm-extra-args: --timeout 600s
+remote: origin
+target-branch: master
 chart-dirs:
   - charts
+helm-extra-args: --timeout 600s
+context: "charts-testing"

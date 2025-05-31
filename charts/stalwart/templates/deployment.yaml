@@ -18,32 +18,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "stalwart.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "stalwart.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.podSecurityContext }}
-      securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          {{- with .Values.securityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             {{- range $name, $port := .Values.ports }}
             - name: {{  $name }}
-              containerPort: {{ $port}}
-              protocol: TCP
+              containerPort: {{ $port }}
             {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
@@ -53,37 +37,10 @@ spec:
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            - name: stalwart-config
-              mountPath: /opt/stalwart-mail/etc
-            - name: stalwart-volume
-              mountPath: /opt/stalwart-mail/data
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- with .Values.volumes }}
+            - name: stalwart-storage
+              mountPath: {{ .Values.persistence.mountPath | quote }}
       volumes:
-        - name: stalwart-volume
+        - name: stalwart-storage
           persistentVolumeClaim:
-            claimName: {{ include "stalwart.fullname" . }}
-        - name: stalwart-config
-          configMap:
-            name: {{ include "stalwart.fullname" . }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+            claimName: {{ template "stalwart.fullname" . }}

@@ -7,11 +7,11 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    {{- range $name, $port := .Values.service.ports }}
-    - port: {{  $port }}
-      targetPort: {{ $name}}
+    {{- range .Values.service.ports }}
+    - port: {{ .port }}
+      targetPort: {{ .targetPort }}
       protocol: TCP
-      name: {{ $name }}
+      name: {{ .name }}
     {{- end }}
   selector:
     {{- include "stalwart.selectorLabels" . | nindent 4 }}

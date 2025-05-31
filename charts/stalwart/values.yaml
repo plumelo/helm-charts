@@ -11,6 +11,15 @@ image:
   repository: stalwartlabs/mail-server
   pullPolicy: IfNotPresent
   tag: "latest"
+  ports:
+    - containerPort: 8080
+    - containerPort: 443
+    - containerPort: 25
+    - containerPort: 587
+    - containerPort: 465
+    - containerPort: 143
+    - containerPort: 993
+    - containerPort: 4190
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
@@ -40,14 +49,30 @@ securityContext: {}
 service:
   type: ClusterIP
   ports:
-    http: 8080
-    https: 443
-    smtp: 25
-    submission: 587
-    smtps: 465
-    imap: 143
-    imaps: 993
-    sieve: 4190
+    - name: http
+      port: 8080
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 443
+    - name: smtp
+      port: 25
+      targetPort: 25
+    - name: submission
+      port: 587
+      targetPort: 587
+    - name: smtps
+      port: 465
+      targetPort: 465
+    - name: imap
+      port: 143
+      targetPort: 143
+    - name: imaps
+      port: 993
+      targetPort: 993
+    - name: sieve
+      port: 4190
+      targetPort: 4190
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
@@ -102,9 +127,10 @@ autoscaling:
 
 persistence:
   enabled: true
-  storageClass: ""
+  storageClass: "standard"
   accessMode: ReadWriteOnce
   size: 10Gi
+  mountPath: /opt/stalwart
 
 # Additional volumes on the output Deployment definition.
 volumes: []

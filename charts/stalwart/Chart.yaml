@@ -1,9 +1,9 @@
 apiVersion: v2
 name: stalwart
-description: A Helm chart for Kubernetes
+description: A Helm chart for Stalwart
 type: application
 version: 0.1.0
-appVersion: "0.11.8"
+appVersion: "latest"
 maintainers:
   - name: megheaiulian
     email: iulian@plumelo.com
